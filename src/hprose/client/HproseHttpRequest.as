@@ -13,7 +13,7 @@
  *                                                        *
  * hprose http request class for ActionScript 3.0.        *
  *                                                        *
- * LastModified: Dec 7, 2013                              *
+ * LastModified: Mar 17, 2014                             *
  * Author: Ma Bingyao <andot@hprose.com>                  *
  *                                                        *
 \**********************************************************/
@@ -39,19 +39,21 @@ package hprose.client {
             var request:URLRequest = new URLRequest(url);
             request.method = URLRequestMethod.POST;
             request.contentType = "application/hprose";
-            request.data = filter.outputFilter(data);
+            request.data = filter.outputFilter(data, request);
             for (var name:String in header) {
                 request.requestHeaders.push(new URLRequestHeader(name, header[name]));
             }
             return new HproseHttpRequest(request, callback, progress, timeout, filter);
         }
         private const stream:URLStream = new URLStream();
+        private var request:URLRequest;
         private var callback:Function;
         private var progress:Function;
         private var timer:Timer;
         private var complete:Boolean = false;
         private var filter:IHproseFilter;
         public function HproseHttpRequest(request:URLRequest, callback:Function, progress:Function, timeout:uint, filter:IHproseFilter) {
+            this.request = request;
             this.callback = callback;
             this.progress = progress;
             this.filter = filter;
@@ -72,7 +74,7 @@ package hprose.client {
                 var data:ByteArray = new ByteArray();
                 stream.readBytes(data);
                 data.position = 0;
-                data = filter.inputFilter(data);
+                data = filter.inputFilter(data, request);
                 callback(data);
             }
         }
