@@ -13,7 +13,7 @@
  *                                                        *
  * hprose http client class for ActionScript 3.0.         *
  *                                                        *
- * LastModified: Dec 24, 2013                              *
+ * LastModified: Mar 17, 2014                             *
  * Author: Ma Bingyao <andot@hprose.com>                  *
  *                                                        *
 \**********************************************************/
@@ -304,7 +304,7 @@ package hprose.client {
                 callback = args[count - 1];
                 args.length--;
             }
-            return new HproseHttpInvoker(url, header, func, args, byref, callback, errorHandler, progressHandler, dispatcher, timeout, resultMode, simple, filter);
+            return new HproseHttpInvoker(url, header, func, args, byref, callback, errorHandler, progressHandler, dispatcher, timeout, resultMode, simple, filter, this);
         }
 
         public function toString():String {

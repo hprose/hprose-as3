@@ -35,15 +35,15 @@ package hprose.client {
     import flash.utils.Timer;
 
     public final class HproseHttpRequest {
-        public static function post(url:String, header:Object, data:ByteArray, callback:Function, progress:Function, timeout:uint, filter:IHproseFilter):HproseHttpRequest {
+        public static function post(url:String, header:Object, data:ByteArray, callback:Function, progress:Function, timeout:uint, filter:IHproseFilter, client:HproseHttpClient):HproseHttpRequest {
             var request:URLRequest = new URLRequest(url);
             request.method = URLRequestMethod.POST;
             request.contentType = "application/hprose";
-            request.data = filter.outputFilter(data, request);
+            request.data = filter.outputFilter(data, client);
             for (var name:String in header) {
                 request.requestHeaders.push(new URLRequestHeader(name, header[name]));
             }
-            return new HproseHttpRequest(request, callback, progress, timeout, filter);
+            return new HproseHttpRequest(request, callback, progress, timeout, filter, client);
         }
         private const stream:URLStream = new URLStream();
         private var request:URLRequest;
@@ -52,11 +52,13 @@ package hprose.client {
         private var timer:Timer;
         private var complete:Boolean = false;
         private var filter:IHproseFilter;
-        public function HproseHttpRequest(request:URLRequest, callback:Function, progress:Function, timeout:uint, filter:IHproseFilter) {
+        private var client:HproseHttpClient;
+        public function HproseHttpRequest(request:URLRequest, callback:Function, progress:Function, timeout:uint, filter:IHproseFilter, client:HproseHttpClient) {
             this.request = request;
             this.callback = callback;
             this.progress = progress;
             this.filter = filter;
+            this.client = client;
             timer = new Timer(timeout);
             stream.addEventListener(Event.COMPLETE, completeHandler);
             stream.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatusHandler);
@@ -74,7 +76,7 @@ package hprose.client {
                 var data:ByteArray = new ByteArray();
                 stream.readBytes(data);
                 data.position = 0;
-                data = filter.inputFilter(data, request);
+                data = filter.inputFilter(data, client);
                 callback(data);
             }
         }

@@ -13,7 +13,7 @@
  *                                                        *
  * hprose http invoker class for ActionScript 3.0.        *
  *                                                        *
- * LastModified: Mar 8, 2014                              *
+ * LastModified: Mar 17, 2014                             *
  * Author: Ma Bingyao <andot@hprose.com>                  *
  *                                                        *
 \**********************************************************/
@@ -52,9 +52,10 @@ package hprose.client {
         private var resultMode:int;
         private var simple:Boolean;
         private var filter:IHproseFilter;
+        private var client:HproseHttpClient;
         private var httpRequest:HproseHttpRequest = null;
 
-        public function HproseHttpInvoker(url:String, header:Object, func:String, args:Array, byref:Boolean, callback:Function, errorHandler:Function, progressHandler:Function, dispatcher:EventDispatcher, timeout:uint, resultMode:int, simple:Boolean, filter:IHproseFilter) {
+        public function HproseHttpInvoker(url:String, header:Object, func:String, args:Array, byref:Boolean, callback:Function, errorHandler:Function, progressHandler:Function, dispatcher:EventDispatcher, timeout:uint, resultMode:int, simple:Boolean, filter:IHproseFilter, client:HproseHttpClient) {
             this.url = url;
             this.header = header;
             this.func = func;
@@ -65,6 +66,7 @@ package hprose.client {
             this.resultMode = resultMode;
             this.simple = simple;
             this.filter = filter;
+            this.client = client;
             if (callback != null) {
                 start(callback, errorHandler, progressHandler);
             }
@@ -180,7 +182,7 @@ package hprose.client {
                 else if (invoker.hasEventListener(ProgressEvent.PROGRESS)) {
                     invoker.dispatchEvent(event);
                 }
-            }, timeout, filter);
+            }, timeout, filter, client);
             return this;
         }
 
