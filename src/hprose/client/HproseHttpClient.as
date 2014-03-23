@@ -13,7 +13,7 @@
  *                                                        *
  * hprose http client class for ActionScript 3.0.         *
  *                                                        *
- * LastModified: Mar 17, 2014                             *
+ * LastModified: Mar 23, 2014                             *
  * Author: Ma Bingyao <andot@hprose.com>                  *
  *                                                        *
 \**********************************************************/
@@ -21,7 +21,6 @@ package hprose.client {
     import hprose.common.HproseException;
     import hprose.common.HproseResultMode;
     import hprose.common.IHproseFilter;
-    import hprose.common.HproseFilter;
     import flash.events.Event;
     import flash.events.IEventDispatcher;
     import flash.events.EventDispatcher;
@@ -31,11 +30,11 @@ package hprose.client {
     [Event(name="error",type="hprose.client.HproseErrorEvent")]
     ﻿public dynamic class HproseHttpClient extends Proxy implements IEventDispatcher {
         private var url:String = null;
-        private const header:Object = { };
+        private const header:Object = {};
+        private var filters:Array = [];
         public var byref:Boolean = false;
         public var simple:Boolean = false;
         public var timeout:uint = 30000;
-        public var filter:IHproseFilter = new HproseFilter();
         private var dispatcher:EventDispatcher;
         public function HproseHttpClient(url:String = "") {
             dispatcher = new EventDispatcher(this);
@@ -69,6 +68,33 @@ package hprose.client {
 
         public function get uri():String {
             return this.url;
+        }
+
+        public function get filter():IHproseFilter {
+            if (filters.length === 0) {
+                return null;
+            }
+            return filters[0];
+        }
+
+        public function set filter(value:IHproseFilter):void {
+            filters.length = 0;
+            if (value !== null) {
+                filters.push(value);
+            }
+        }
+
+        public function addFilter(filter:IHproseFilter):void {
+            filters.push(filter);
+        }
+
+        public function removeFilter(filter:IHproseFilter):Boolean {
+            var i = filters.indexOf(filter);
+            if (i === -1) {
+                return false;
+            }
+            filters.splice(i, 1);
+            return true;
         }
 
         public function setHeader(name:String, value:String):void {
@@ -304,7 +330,7 @@ package hprose.client {
                 callback = args[count - 1];
                 args.length--;
             }
-            return new HproseHttpInvoker(url, header, func, args, byref, callback, errorHandler, progressHandler, dispatcher, timeout, resultMode, simple, filter, this);
+            return new HproseHttpInvoker(url, header, func, args, byref, callback, errorHandler, progressHandler, dispatcher, timeout, resultMode, simple, filters, this);
         }
 
         public function toString():String {

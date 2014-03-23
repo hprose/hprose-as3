@@ -13,7 +13,7 @@
  *                                                        *
  * hprose http request class for ActionScript 3.0.        *
  *                                                        *
- * LastModified: Mar 17, 2014                             *
+ * LastModified: Mar 23, 2014                             *
  * Author: Ma Bingyao <andot@hprose.com>                  *
  *                                                        *
 \**********************************************************/
@@ -35,15 +35,18 @@ package hprose.client {
     import flash.utils.Timer;
 
     public final class HproseHttpRequest {
-        public static function post(url:String, header:Object, data:ByteArray, callback:Function, progress:Function, timeout:uint, filter:IHproseFilter, client:HproseHttpClient):HproseHttpRequest {
+        public static function post(url:String, header:Object, data:ByteArray, callback:Function, progress:Function, timeout:uint, filters:Array, client:HproseHttpClient):HproseHttpRequest {
             var request:URLRequest = new URLRequest(url);
             request.method = URLRequestMethod.POST;
             request.contentType = "application/hprose";
-            request.data = filter.outputFilter(data, client);
+            for (var i = 0, n = filters.length; i < n; i++) {
+                data = filters[i].outputFilter(data, client);
+            }
+            request.data = data;
             for (var name:String in header) {
                 request.requestHeaders.push(new URLRequestHeader(name, header[name]));
             }
-            return new HproseHttpRequest(request, callback, progress, timeout, filter, client);
+            return new HproseHttpRequest(request, callback, progress, timeout, filters, client);
         }
         private const stream:URLStream = new URLStream();
         private var request:URLRequest;
@@ -51,13 +54,13 @@ package hprose.client {
         private var progress:Function;
         private var timer:Timer;
         private var complete:Boolean = false;
-        private var filter:IHproseFilter;
+        private var filters:Array;
         private var client:HproseHttpClient;
-        public function HproseHttpRequest(request:URLRequest, callback:Function, progress:Function, timeout:uint, filter:IHproseFilter, client:HproseHttpClient) {
+        public function HproseHttpRequest(request:URLRequest, callback:Function, progress:Function, timeout:uint, filters:Array, client:HproseHttpClient) {
             this.request = request;
             this.callback = callback;
             this.progress = progress;
-            this.filter = filter;
+            this.filters = filters;
             this.client = client;
             timer = new Timer(timeout);
             stream.addEventListener(Event.COMPLETE, completeHandler);
@@ -76,7 +79,9 @@ package hprose.client {
                 var data:ByteArray = new ByteArray();
                 stream.readBytes(data);
                 data.position = 0;
-                data = filter.inputFilter(data, client);
+                for (var i = filters.length - 1; i >= 0; i--) {
+                    data = filters[i].inputFilter(data, client);
+                }
                 callback(data);
             }
         }

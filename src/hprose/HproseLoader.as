@@ -21,7 +21,6 @@ package hprose {
     import hprose.common.HproseException;
     import hprose.common.HproseResultMode;
     import hprose.common.IHproseFilter;
-    import hprose.common.HproseFilter;
 
     import hprose.client.HproseHttpClient;
     import hprose.client.HproseHttpInvoker;
@@ -44,7 +43,6 @@ package hprose {
             hprose.common.HproseException;
             hprose.common.HproseResultMode;
             hprose.common.IHproseFilter;
-            hprose.common.HproseFilter;
             hprose.client.HproseHttpClient;
             hprose.client.HproseHttpInvoker;
             hprose.client.HproseHttpRequest;
