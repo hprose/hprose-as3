@@ -13,7 +13,7 @@
  *                                                        *
  * hprose raw reader class for ActionScript 3.0.          *
  *                                                        *
- * LastModified: Mar 8, 2014                              *
+ * LastModified: Apr 7, 2014                              *
  * Author: Ma Bingyao <andot@hprose.com>                  *
  *                                                        *
 \**********************************************************/
@@ -193,7 +193,7 @@ package hprose.io {
                 tag = stream.readByte();
                 ostream.writeByte(tag);
             } while (tag != HproseTags.TagQuote);
-            for (var i:int = 0; i < count; i++) {
+            for (var i:int = 0; i < count; ++i) {
                 tag = stream.readByte();
                 switch ((tag & 0xff) >>> 4) {
                     case 0:
@@ -229,6 +229,7 @@ package hprose.io {
                             ostream.writeByte(stream.readByte());
                             ostream.writeByte(stream.readByte());
                             ostream.writeByte(stream.readByte());
+                            ++i;
                             break;
                         }
                     // no break here!! here need throw exception.
