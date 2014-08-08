@@ -12,7 +12,7 @@
  *                                                        *
  * hprose reader class for ActionScript 3.0.              *
  *                                                        *
- * LastModified: Mar 8, 2014                              *
+ * LastModified: Aug 8, 2014                              *
  * Author: Ma Bingyao <andot@hprose.com>                  *
  *                                                        *
 \**********************************************************/
@@ -283,7 +283,9 @@ package hprose.io {
         public function readBytesWithoutTag():ByteArray {
             var count:int = readInt(HproseTags.TagQuote);
             var bytes:ByteArray = new ByteArray();
-            stream.readBytes(bytes, 0, count);
+            if (count > 0) {
+                stream.readBytes(bytes, 0, count);
+            }
             bytes.position = 0;
             stream.readByte();
             refer.set(bytes);
