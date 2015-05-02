@@ -1,5 +1,7 @@
 # Hprose for ActionScript 3.0
 
+[![Join the chat at https://gitter.im/hprose/hprose-as3](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/hprose/hprose-as3?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 >---
 - **[Introduction](#introduction)**
 - **[Usage](#usage)**
