@@ -12,7 +12,7 @@
  *                                                        *
  * hprose reader class for ActionScript 3.0.              *
  *                                                        *
- * LastModified: Aug 8, 2014                              *
+ * LastModified: Nov 25, 2018                             *
  * Author: Ma Bingyao <andot@hprose.com>                  *
  *                                                        *
 \**********************************************************/
@@ -192,11 +192,6 @@ package hprose.io {
                 var minute:Number = parseInt(stream.readUTFBytes(2), 10);
                 var second:Number = parseInt(stream.readUTFBytes(2), 10);
                 var millisecond:Number = 0;
-                tag = stream.readByte();
-                if (tag == HproseTags.TagPoint) {
-                    millisecond = parseInt(stream.readUTFBytes(3), 10);
-                    tag = stream.readByte();
-                }
                 tag = stream.readByte();
                 if (tag == HproseTags.TagPoint) {
                     millisecond = parseInt(stream.readUTFBytes(3), 10);
